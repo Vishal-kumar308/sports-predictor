@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>🏏 Cricket Performance Predictor</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background-color: #e6f9ff;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+        }
+        input[type="text"] {
+            padding: 10px;
+            width: 300px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        h1 {
+            color: #007bff;
+        }
+        .result {
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🏏 Cricket Performance Predictor</h1>
+    <form method="POST">
+        <input type="text" name="player" placeholder="Enter player name" required />
+        <button type="submit">Predict</button>
+    </form>
+
+    {% if predicted_runs %}
+        <div class="result">
+            Predicted Runs (Next Match): {{ predicted_runs }}
+        </div>
+
+        {% if recent_scores %}
+            <h3>Recent Match Performance</h3>
+            <canvas id="performanceChart" width="600" height="300"></canvas>
+            <script>
+                const ctx = document.getElementById('performanceChart').getContext('2d');
+                const chart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: [
+                            {% for i in range(recent_scores|length) %}
+                                "Match {{ i+1 }}"{% if not loop.last %}, {% endif %}
+                            {% endfor %}
+                        ],
+                        datasets: [{
+                            label: "Runs Scored",
+                            backgroundColor: '#3399ff',
+                            data: {{ recent_scores }}
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            </script>
+        {% endif %}
+    {% endif %}
+</body>
+</html>
+
+
+
