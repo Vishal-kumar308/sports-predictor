@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request
 import requests
-from config import API_KEY  # Make sure this exists
+import os
+from config import API_KEY  # Make sure config.py uses os.getenv("API_KEY")
 
 app = Flask(__name__)
 
@@ -41,8 +42,7 @@ def index():
 
     return render_template("index.html", predicted_runs=predicted_runs, recent_scores=recent_scores)
 
+# ✅ Required change for Render deployment
 if __name__ == "__main__":
-    app.run(debug=True)
-
-
-
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
